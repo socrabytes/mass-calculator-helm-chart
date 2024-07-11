@@ -1,0 +1,32 @@
+replicaCount: 2
+
+image:
+  repository: mass-calculator
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8080
+
+env:
+  port: 8080
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 50m
+    memory: 64Mi
+
+ingress:
+  enabled: true
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  hosts:
+    - host: mass-calculator.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []

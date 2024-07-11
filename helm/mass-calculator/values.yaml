@@ -1,0 +1,33 @@
+# values.yaml
+# This file contains the default values for the Helm chart configuration.
+
+replicaCount: 2  
+
+image:
+  repository: mass-calculator  # Docker image repository.
+  tag: latest  
+  pullPolicy: IfNotPresent 
+
+service:
+  type: ClusterIP  # Type of Kubernetes service.
+  port: 8080  # Port that the service will expose.
+  nodePort: null # NodePort is optiona and can be set in envrionment-specific files.
+
+
+env:
+  port: 8080  # Default port for the application.
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 50m
+    memory: 64Mi
+
+ingress:
+  enabled: false
+  annotations: {}
+  hosts: []
+  tls: []
+

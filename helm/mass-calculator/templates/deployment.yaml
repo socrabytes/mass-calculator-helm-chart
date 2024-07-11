@@ -1,0 +1,42 @@
+# templates/deployment.yaml
+# This file defines the Kubernetes deployment resource.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "mass-calculator.fullname" . }}
+  labels:
+    {{- include "mass-calculator.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}  # Number of replicas from values.yaml.
+  selector:
+    matchLabels:
+      {{- include "mass-calculator.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "mass-calculator.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"  # Image repository and tag from values.yaml.
+          imagePullPolicy: {{ .Values.image.pullPolicy }}  # Image pull policy from values.yaml.
+          ports:
+            - containerPort: {{ .Values.service.port }}  # Ensure this matches the service.port.
+          env:
+            - name: PORT
+              value: "{{ .Values.env.port }}"  # Environment variable for port from values.yaml.
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}  # Resource requests and limits.
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 10

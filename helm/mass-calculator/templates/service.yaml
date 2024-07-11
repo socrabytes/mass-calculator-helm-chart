@@ -1,0 +1,19 @@
+# templates/service.yaml
+# This file defines the Kubernetes service resource.
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "mass-calculator.fullname" . }}
+  labels:
+    {{- include "mass-calculator.labels" . | nindent 4 }}
+spec:
+  type: "{{ .Values.service.type }}"  # Service type from values.yaml.
+  ports:
+    - port: {{ .Values.service.port }}  # Service port from values.yaml.
+      targetPort: {{ .Values.service.port }}  # Target port in the container.
+      {{- if eq .Values.service.type "NodePort" }}
+      nodePort: {{ .Values.service.nodePort }}  # NodePort for development environment.
+      {{- end }}
+  selector:
+    {{- include "mass-calculator.selectorLabels" . | nindent 4 }}  # Selector to match pods with this service.
