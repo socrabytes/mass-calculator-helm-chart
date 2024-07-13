@@ -1,18 +1,68 @@
 # Mass Calculator Helm Chart
 
-This repository contains a Helm chart for deploying a mass calculator application to a Kubernetes cluster. The application calculates the mass of an aluminium sphere and an iron cube based on dimensions provided through HTTP endpoints.
+## Introduction
+
+The Mass Calculator is a Kubernetes-ready application that demonstrates proficiency in Go programming, Docker containerization, and Helm chart deployment. Originally conceived as a response to a DevOps challenge, this project has been expanded to showcase best practices in cloud-native application development.
+
+Key features and technologies demonstrated:
+
+- Efficient Go programming for a practical mass calculation application
+- Docker containerization optimized for size and security
+- Helm chart creation for flexible Kubernetes deployment
+- Implementation of health checks and readiness probes
+- Consideration for both development and production environments
+
+This project serves as a compact yet comprehensive example of modern DevOps practices, from code to container to cloud deployment.
 
 ## Application Overview
 
-The Mass Calculator application is a simple Go program that provides HTTP endpoints to calculate the mass of:
-- An aluminium sphere based on its diameter (`/aluminium/sphere`)
-- An iron cube based on its side length (`/iron/cube`)
+The Mass Calculator is a Go-based service that provides HTTP endpoints to compute the mass of geometric shapes:
 
-The application listens on a port specified via a command-line argument, which is made configurable through the Helm chart.
+* Aluminium sphere based on its diameter (`/aluminium/sphere`)
+* Iron cube based on its side length (`/iron/cube`)
+
+Key technical features:
+
+1. **Flexible Port Configuration**: 
+   - The application accepts a port number as a command-line argument.
+   - When deployed via Helm, the port is configurable as an environment variable, set through Helm values.
+
+2. **RESTful API**: Utilizes HTTP GET requests with query parameters for dimension input:
+   * **Endpoints**:
+      * `/aluminium/sphere` for calculating the mass of an aluminium sphere.
+      * `/iron/cube` for calculating the mass of an iron cube.
+   * **Query Parameter**: `dimension` (required, floating-point number).
+   * **Success Response**: Returns the mass in grams, rounded to two decimal places.
+   * **Error Response**: Returns HTTP status code 400 (Bad Request) for invalid or missing `dimension`.
+
+3. **Precise Calculations**: Implements accurate formulas for volume and mass calculations, with results provided in grams.
+
+4. **Error Handling**: Properly handles bad requests, returning appropriate HTTP status codes.
+
+5. **Health Checks**: Implements `/healthz` and `/readyz` endpoints for liveness and readiness probes, enhancing reliability in Kubernetes deployments.
+
+6. **Containerization**:
+   - Multi-stage build process for optimized image size (< 100MB compressed).
+   - Base image: Alpine Linux for minimal footprint.
+   - Non-root user execution for enhanced security.
+   - Environment variable `PORT` for flexible port configuration.
+   - Dockerfile features:
+     * Go dependencies management and build in the first stage.
+     * Only the compiled binary copied to the final stage.
+     * Creation of a non-root user (`appuser`) for running the application.
+     * `EXPOSE` instruction documenting the default port.
+     * `ENTRYPOINT` using the `PORT` environment variable to configure the application.
+
+7. **Helm Deployment**: 
+   - Utilizes a Helm chart for Kubernetes deployment, with configurable values for enhanced flexibility.
+   - Supports environment-specific configurations through separate value files (`values.yaml`, `values-dev.yaml`, `values-prod.yaml`).
+   - Allows for dynamic configuration adjustments using Helm's `--set` flags during deployment.
+
+The application is designed to be highly configurable, allowing for easy adjustment of deployment parameters such as replica count, port settings, and resource allocation in both development and production environments.
 
 ## Project Structure
 ```shell
-teamviewer_assignment/
+mass-calculator-helm-chart/
 ├── src
 │   ├── go.mod                   # Go module file for dependency management.
 │   └── main.go                  # Go application source code.
