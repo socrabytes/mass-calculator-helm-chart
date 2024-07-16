@@ -16,7 +16,7 @@ This project serves as a compact yet comprehensive example of modern DevOps prac
 
 ## Application Overview
 
-The Mass Calculator is a Go-based service that provides HTTP endpoints to compute the mass of geometric shapes:
+The Mass Calculator is a Go-based service that calculates the mass of geometric shapes based on their dimensions and material density. It provides HTTP endpoints to compute the mass of:
 
 * Aluminium sphere based on its diameter (`/aluminium/sphere`)
 * Iron cube based on its side length (`/iron/cube`)
@@ -59,6 +59,14 @@ Key technical features:
    - Allows for dynamic configuration adjustments using Helm's `--set` flags during deployment.
 
 The application is designed to be highly configurable, allowing for easy adjustment of deployment parameters such as replica count, port settings, and resource allocation in both development and production environments.
+
+## Technologies Used
+
+- Go: For the main application logic
+- Docker: For containerization
+- Kubernetes: As the target deployment platform
+- Helm: For packaging and deploying the application to Kubernetes
+- Alpine Linux: As the base image for the Docker container
 
 ## Project Structure
 ```shell
