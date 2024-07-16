@@ -1,12 +1,12 @@
 replicaCount: 2
 
 image:
-  repository: mass-calculator
+  repository: socrates90/mass-calculator
   tag: latest
   pullPolicy: IfNotPresent
 
 service:
-  type: ClusterIP
+  type: LoadBalancer
   port: 8080
 
 env:
