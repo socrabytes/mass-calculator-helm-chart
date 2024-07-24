@@ -163,7 +163,7 @@ Replace `<minikube-ip>`, `<diameter>`, and `<side_length>` with appropriate valu
 > **Note:** Ensure you update the `/etc/hosts` file to map the Minikube IP or Ingress IP to the desired host name if needed. 
 
 #### Production Environment (LoadBalancer)
-To install the chart for production using `ClusterIP` and `Ingress`:
+To install the chart for production using `LoadBalancer`:
 ```shell
 helm install my-release ./mass-calculator --values ./mass-calculator/values-prod.yaml --set service.port=8080 --set env.port=8080
 ```
