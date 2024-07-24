@@ -109,17 +109,31 @@ The following table lists the configurable parameters of the chart and their def
 | `env.port`         | Application port             | `8080`            |
 | `resources`        | Resource requests and limits | `{}`              |
 
-# Installation and Usage
+## Installation and Usage
 
 ### Prerequisites
 Ensure you have the following installed before starting:
-- Docker
-- Kubernetes
-- Helm
+- **Docker**
+- **Kubernetes Cluster**: Ensure you have a Kubernetes cluster set up.
+    - For production, this guide assumes you are using Amazon EKS.
+    - For development, you can use Minikube or any other local Kubernetes setup.
+- **Helm**
 
-## Quick Start Guide
+#### EKS Cluster Setup (Production Only)
+If you don't have an EKS cluster set up, you can create one using the following commands:
 
-Clone the Repository
+1. **Create an EKS Cluster**:
+   ```sh
+   eksctl create cluster --name demo-eks --region us-east-1 --nodegroup-name my-nodes --node-type t3.small --managed --nodes 2
+   ```
+2. **Update kubeconfig**:
+   ```sh
+   aws eks --region us-east-1 update-kubeconfig --name demo-eks
+   ```
+
+### Quick Start Guide
+
+#### Clone the Repository
 
 First, clone the repository to your local machine:
 ```shell
@@ -127,7 +141,7 @@ git clone https://github.com/socrates90/mass-calculator-helm-chart.git
 cd mass-calculator-helm-chart
 ```
 
-### Development Environment (NodePort)
+#### Development Environment (NodePort)
 
 To install the chart for development using `NodePort`:
 ```shell
@@ -146,27 +160,36 @@ After deployment, you can use the following endpoints to calculate the mass of g
     ```
 Replace `<minikube-ip>`, `<diameter>`, and `<side_length>` with appropriate values.
 
-### Production Environment (Ingress)
+> **Note:** Ensure you update the `/etc/hosts` file to map the Minikube IP or Ingress IP to the desired host name if needed. 
+
+#### Production Environment (LoadBalancer)
 To install the chart for production using `ClusterIP` and `Ingress`:
 ```shell
 helm install my-release ./mass-calculator --values ./mass-calculator/values-prod.yaml --set service.port=8080 --set env.port=8080
 ```
 This command installs the Helm chart with the release name my-release, setting the service and application port to 8080. The values-prod.yaml file contains configuration specific to the production environment.
 
-After deployment, you can use the following endpoints to calculate the mass of geometrical shapes:
-- **Aluminium Sphere**:
-    ```shell
-    curl "http://<ingress-host>/aluminium/sphere?dimension=<diameter>"
-    ```
-- **Iron Cube**:
-    ```shell
-    curl "http://<ingress-host>/iron/cube?dimension=<side_length>"
-    ```
-Replace `<ingress-host>`, `<diameter>`, and `<side_length>` with appropriate values.
+#### Accessing the Application in Production
+1. **Get the External IP**:
+   ```sh
+   kubectl get svc -n default
+   ```
 
-> **Note:** Ensure you update the `/etc/hosts` file to map the Minikube IP or Ingress IP to the desired host name if needed. 
+2. **Test Application Endpoints**:
+   - **Aluminium Sphere**:
+      ```shell
+      curl "http://<ingress-host>:8080/aluminium/sphere?dimension=<diameter>"
+      ```
+   - **Iron Cube**:
+      ```shell
+      curl "http://<ingress-host>:8080/iron/cube?dimension=<side_length>"
+      ```
+   Replace `<ingress-host>` with the external IP or domain of your LoadBalancer to calculate the mass of geometrical shapes:
 
-### Uninstalling the Chart
+   Replace  `<diameter>`, and `<side_length>` with appropriate values.
+
+### Managing the Deployment
+#### Uninstalling the Chart: 
 To uninstall the release:
 ```shell
 helm uninstall my-release
@@ -174,12 +197,24 @@ helm uninstall my-release
 
 This command removes all the Kubernetes resources associated with the Helm release my-release.
 
+#### Terminating EKS Cluster
+For production environments using EKS, terminate the cluster with the following commands:
+
+1. **Delete EKS Cluster**: 
+   ```sh
+   eksctl delete cluster --name demo-eks --region us-east-1
+   ```
+2. **Verify Deletion**:
+   ```sh
+   eksctl get cluster --name demo-eks --region us-east-1
+   ```
+
 ## Notes
 This chart configures resource requests and limits and includes liveness and readiness probes to ensure the application runs smoothly in a Kubernetes cluster.
 
 ---
 
-For detailed information on the application itself and the Dockerfile used to containerize it, please refer to the respective source files (`src/main.go` and `docker/Dockerfile`).
+For detailed information on the application itself and the Dockerfile used to containerize it, please refer to the respective source files (`src/main.go` and `Dockerfile`).
 
 ---
 
