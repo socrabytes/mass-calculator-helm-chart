@@ -3,19 +3,25 @@ Mass Calculator Application
 #################################
 
 1. Get the application URL by running these commands:
+  For Development (Noodeport):
+    export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "mass-calculator.fullname" . }})
+    export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+    echo "Access your application at: http://$NODE_IP:$NODE_PORT"
 
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "mass-calculator.fullname" . }})
-  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-  echo "Access your application at: http://$NODE_IP:$NODE_PORT"
+  For Production (LoadBalancer):
+  export LOAD_BALANCER_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "mass-calculator.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+  echo "Access your application at: http://$LOAD_BALANCER_IP:8080"
 
 2. Access the application at the following endpoints:
 
   Aluminium Sphere:
-  http://$NODE_IP:$NODE_PORT/aluminium/sphere?dimension=<dimension>
+  Development: http://$NODE_IP:$NODE_PORT/aluminium/sphere?dimension=<dimension>
+  Production: http://$LOAD_BALANCER_IP:8080/aluminium/sphere?dimension=<dimension>
 
   Iron Cube:
-  http://$NODE_IP:$NODE_PORT/iron/cube?dimension=<dimension>
-
+  Development: http://$NODE_IP:$NODE_PORT/iron/cube?dimension=<dimension>
+  Production: http://$LOAD_BALANCER_IP:8080/iron/cube?dimension=<dimension>
+  
 3. If you're using Minikube, you can get the Minikube IP by running:
 
   minikube ip
