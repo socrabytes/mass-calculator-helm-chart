@@ -71,11 +71,6 @@ The application is designed to be highly configurable, allowing for easy adjustm
 ## Project Structure
 ```shell
 mass-calculator-helm-chart/
-├── src
-│   ├── go.mod                   # Go module file for dependency management.
-│   └── main.go                  # Go application source code.
-├── docker
-│   └── Dockerfile               # Dockerfile for building the application.
 ├── helm
 │   ├── mass-calculator          # Directory containing the Helm chart.
 │   │   ├── Chart.yaml           # Metadata about Helm chart
@@ -89,7 +84,11 @@ mass-calculator-helm-chart/
 │   │   ├── values-dev.yaml      # Development environment values
 │   │   ├── values-prod.yaml     # Production environment values
 │   │   └── values.yaml          # Default environment values
+├── src
+│   ├── go.mod                   # Go module file for dependency management.
+│   └── main.go                  # Go application source code.
 ├── .gitignore
+├── Dockerfile                   # Dockerfile for building the application.
 └── README.md
 
 ```
