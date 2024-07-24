@@ -222,4 +222,4 @@ For detailed information on the application itself and the Dockerfile used to co
 Contributions are welcome! Please open an issue or submit a pull request for any changes.
 
 ## License
-This project is licensed udner the MIT License - see the LICENSE file for details.
+This project is licensed udner the MIT License - see the [LICENSE](LICENSE) file for details.
